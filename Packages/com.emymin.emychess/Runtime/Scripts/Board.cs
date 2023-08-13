@@ -131,9 +131,9 @@ namespace Emychess
             {
                 if (piece.white == white)
                 {
-                    Vector2[] legalMoves = currentRules.GetAllLegalMoves(piece, this);
+                    Vector2Int[] legalMoves = currentRules.GetAllLegalMoves(piece, this);
                     int moveCount = 0;
-                    foreach(Vector2 move in legalMoves)
+                    foreach(Vector2Int move in legalMoves)
                     {
                         if (move != currentRules.legalMovesIgnoreMarker && move!=currentRules.legalMovesEndMarker)
                         {
@@ -299,9 +299,9 @@ namespace Emychess
         /// </summary>
         /// <param name="vec"></param>
         /// <returns></returns>
-        public int VecToIndex(Vector2 vec)
+        public int VecToIndex(Vector2Int vec)
         {
-            return GridToIndex((int)vec.x, (int)vec.y);
+            return GridToIndex(vec.x, vec.y);
         }
         /// <summary>
         /// Check if a coordinate is within the bounds of the board
@@ -396,9 +396,9 @@ namespace Emychess
         /// <param name="original">Starting position</param>
         /// <param name="target">Target position</param>
         /// <param name="grid"></param>
-        public void MoveGridPieceVec(Vector2 original,Vector2 target,Piece[] grid)
+        public void MoveGridPieceVec(Vector2Int original,Vector2Int target,Piece[] grid)
         {
-            MoveGridPiece((int)original.x, (int)original.y, (int)target.x, (int)target.y, grid);
+            MoveGridPiece(original.x, original.y, target.x, target.y, grid);
         }
 
         /// <summary>
@@ -406,9 +406,9 @@ namespace Emychess
         /// </summary>
         /// <param name="pos"></param>
         /// <returns>A <see cref="Piece"/> if the square is not empty, <see cref="null"/> if it is</returns>
-        public Piece GetPieceVec(Vector2 pos)
+        public Piece GetPieceVec(Vector2Int pos)
         {
-            return GetPiece((int)pos.x, (int)pos.y);
+            return GetPiece(pos.x, pos.y);
         }
         /// <summary>
         /// Refresh the <see cref="grid"/> based on the current board status

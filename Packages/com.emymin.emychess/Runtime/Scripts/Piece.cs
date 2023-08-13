@@ -72,7 +72,7 @@ namespace Emychess
         /// <summary>
         /// The currently legal moves that the piece can make, the DefaultRules behaviour generates them
         /// </summary>
-        private Vector2[] legalMoves;
+        private Vector2Int[] legalMoves;
         private VRC_Pickup pickup;
 
 
@@ -191,12 +191,12 @@ namespace Emychess
             pool.Return(this.gameObject);
         }
         /// <summary>
-        /// Get the piece's position as a Vec2 (vec2int is not supported in Udon yet)
+        /// Get the piece's position as a Vector2Int
         /// </summary>
         /// <returns></returns>
-        public Vector2 GetVec()
+        public Vector2Int GetVec()
         {
-            return new Vector2(x, y);
+            return new Vector2Int(x, y);
         }
         /// <summary>
         /// Play the piece move sound
@@ -228,12 +228,12 @@ namespace Emychess
             {
                 board._AllPiecesUngrabbable();
                 legalMoves = board.currentRules.GetAllLegalMoves(this, board);
-                foreach (Vector2 legalMove in legalMoves)
+                foreach (Vector2Int legalMove in legalMoves)
                 {
                     if (legalMove != board.currentRules.legalMovesIgnoreMarker)
                     {
                         if (legalMove == board.currentRules.legalMovesEndMarker) break;
-                        board.SetIndicator((int)legalMove.x, (int)legalMove.y, 1);
+                        board.SetIndicator(legalMove.x, legalMove.y, 1);
                     }
                 }
             }
@@ -247,7 +247,7 @@ namespace Emychess
         }
 
         /// <summary>
-        /// Function to be called at the end of a move attempt. Will pass <see cref="legalMoves"/> to <see cref="GameRules.DefaultRules.MoveLegalCheck(Piece, int, int, Board, Vector2[])"/> to perform the move
+        /// Function to be called at the end of a move attempt. Will pass <see cref="legalMoves"/> to <see cref="GameRules.DefaultRules.MoveLegalCheck(Piece, int, int, Board, Vector2Int[])"/> to perform the move
         /// </summary>
         /// <param name="xNew"></param>
         /// <param name="yNew"></param>

@@ -132,8 +132,8 @@ namespace Emychess
         {
             Piece currentKingPiece = currentSide ? board.whiteKing : board.blackKing;
             if (!currentKingPiece) return;
-            Vector2 kingVector = currentKingPiece.GetVec();
-            board.SetIndicator((int)kingVector.x, (int)kingVector.y, 2);
+            Vector2Int kingVector = currentKingPiece.GetVec();
+            board.SetIndicator(kingVector.x, kingVector.y, 2);
         }
 
         public void RefreshPiecePlacerPieceCount()

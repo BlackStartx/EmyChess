@@ -17,7 +17,7 @@ namespace Emychess.GameRules
     public class DefaultRules : UdonSharpBehaviour
     {
         //this is where Udon(Sharp)'s limitations make the code a bit hard to design in a sane way
-        // legal moves are passed around as Vector2 arrays, which emulate list functionality by using a legalMovesIgnoreMarker to indicate elements to be skipped (for quick removal)
+        // legal moves are passed around as Vector2Int arrays, which emulate list functionality by using a legalMovesIgnoreMarker to indicate elements to be skipped (for quick removal)
         // and legalMovesEndMarker to indicate the end of the list
         // this also means that functions receiving it need to always check what kind of move it was (regular, castling, en passant, double push) and find which object was supposed to be captured
         // a workaround could be using Object[] arrays to work as structs, to put all move information inside it, but that comes with its own annoyances
@@ -33,34 +33,34 @@ namespace Emychess.GameRules
         /// Value that indicates the end of a move list
         /// </summary>
         [HideInInspector]
-        public Vector2 legalMovesEndMarker;
+        public Vector2Int legalMovesEndMarker;
         /// <summary>
         /// Value that can be skipped when iterating over a move list
         /// </summary>
         [HideInInspector]
-        public Vector2 legalMovesIgnoreMarker;
+        public Vector2Int legalMovesIgnoreMarker;
         /// <summary>
         /// Directions that a generic sliding piece can move in. Also the queen's legal directions.
         /// </summary>
-        private Vector2[] slideDirections;
+        private Vector2Int[] slideDirections;
         /// <summary>
         /// Directions that a rook can move in
         /// </summary>
-        private Vector2[] rookDirections;
+        private Vector2Int[] rookDirections;
         /// <summary>
         /// Directions that a bishop can move in
         /// </summary>
-        private Vector2[] bishopDirections;
+        private Vector2Int[] bishopDirections;
         private int[] rookColumns;
         public void Start()
         {
-            legalMovesEndMarker = new Vector2(-1, -1);
-            legalMovesIgnoreMarker = new Vector2(-2, -2);
+            legalMovesEndMarker = Vector2Int.left - Vector2Int.up;
             rookColumns = new[] { 0, 7 };
-            slideDirections = new [] { new Vector2(-1,0),new Vector2(1,0),new Vector2(0,-1),new Vector2(0,1),new Vector2(-1,1),new Vector2(-1,-1),new Vector2(1,1),new Vector2(1,-1)};
-            rookDirections = new Vector2[4];
+            legalMovesIgnoreMarker = 2 * (Vector2Int.left - Vector2Int.up);
+            slideDirections = new [] { Vector2Int.left,Vector2Int.right,Vector2Int.down,Vector2Int.up,Vector2Int.left + Vector2Int.up,Vector2Int.left - Vector2Int.up,Vector2Int.right + Vector2Int.up,Vector2Int.right - Vector2Int.up};
+            rookDirections = new Vector2Int[4];
             for(int i = 0; i < 4; i++) rookDirections[i] = slideDirections[i];
-            bishopDirections = new Vector2[4];
+            bishopDirections = new Vector2Int[4];
             for(int i = 0; i < 4; i++) bishopDirections[i] = slideDirections[7 - i];
         }
 
@@ -72,13 +72,13 @@ namespace Emychess.GameRules
         /// <param name="y"></param>
         /// <param name="legalMoves"></param>
         /// <returns>If the append was successful, index incremented by 1</returns>
-        private int AppendMove(int index, int x,int y,Vector2[] legalMoves)
+        private int AppendMove(int index, int x,int y,Vector2Int[] legalMoves)
         {
             int newIndex = index;
             if (x < 0 || x > 7 || y < 0 || y > 7) return newIndex;
             if (index < legalMoves.Length)
             {     
-                legalMoves[index] = new Vector2(x, y);
+                legalMoves[index] = new Vector2Int(x, y);
                 if(index < legalMoves.Length - 1)
                 {
                     legalMoves[index + 1] = legalMovesEndMarker;//used to mark the end of the """"list""""
@@ -97,9 +97,9 @@ namespace Emychess.GameRules
         /// <param name="pawnThatDidADoublePushLastRound">A reference to a pawn that did a double push in the previous turn (for en passant), null if none</param>
         /// <param name="board">A reference to the board behaviour (UdonSharp doesn't support static methods)</param>
         /// <returns>List of pseudo-legal moves</returns>
-        public Vector2[] GetAllPseudoLegalMovesGrid(Piece movedPiece,Piece[] grid,Piece pawnThatDidADoublePushLastRound,Board board)
+        public Vector2Int[] GetAllPseudoLegalMovesGrid(Piece movedPiece,Piece[] grid,Piece pawnThatDidADoublePushLastRound,Board board)
         {
-            Vector2[] legalMoves = new Vector2[64]; // SADLY still no lists, so gotta do this the cursed way
+            Vector2Int[] legalMoves = new Vector2Int[64]; // SADLY still no lists, so gotta do this the cursed way
             int index = 0;
             legalMoves[index] = legalMovesEndMarker;
             string type = movedPiece.type;
@@ -191,19 +191,19 @@ namespace Emychess.GameRules
             }
             else if (type == "rook" || type == "bishop" || type == "queen")
             {
-                Vector2[] allowedDirections=slideDirections;
+                Vector2Int[] allowedDirections=slideDirections;
                 if (type == "rook") allowedDirections = rookDirections;
                 else if (type == "bishop") allowedDirections = bishopDirections;
-                foreach(Vector2 direction in allowedDirections)
+                foreach(Vector2Int direction in allowedDirections)
                 {
-                    Vector2 pos = new Vector2(x, y);
+                    Vector2Int pos = new Vector2Int(x, y);
                     while (true)
                     {
                         pos += direction;
-                        if (!board.IsValidCoordinate((int)pos.x, (int)pos.y)) break;
-                        Piece obstaclePiece = board.GetGridPiece((int)pos.x,(int)pos.y,grid);
+                        if (!board.IsValidCoordinate(pos.x, pos.y)) break;
+                        Piece obstaclePiece = board.GetGridPiece(pos.x,pos.y,grid);
                         if (obstaclePiece != null && obstaclePiece.white == white) break;
-                        index = AppendMove(index, (int)pos.x, (int)pos.y, legalMoves);
+                        index = AppendMove(index, pos.x, pos.y, legalMoves);
                         if (obstaclePiece != null) break;
                     }
                 }
@@ -211,19 +211,19 @@ namespace Emychess.GameRules
             }
             else if (type == "knight")
             {
-                Vector2 left, right;
-                foreach (Vector2 direction in rookDirections) //directions are the same as the rook
+                Vector2Int left, right;
+                foreach (Vector2Int direction in rookDirections) //directions are the same as the rook
                 {
-                    Vector2 pos = new Vector2(x, y);
+                    Vector2Int pos = new Vector2Int(x, y);
                     pos += direction * 2;
-                    if (direction.x == 0) { left = Vector2.left;right = Vector2.right; }
-                    else { left = Vector2.up;right = Vector2.down; }
-                    Vector2 leftPos = pos + left;
-                    Vector2 rightPos = pos + right;
-                    Piece leftPiece = board.GetGridPiece((int)leftPos.x,(int)leftPos.y,grid);
-                    Piece rightPiece = board.GetGridPiece((int)rightPos.x, (int)rightPos.y, grid);
-                    if (leftPiece == null || (leftPiece != null && leftPiece.white != white)) index = AppendMove(index, (int)leftPos.x, (int)leftPos.y, legalMoves);
-                    if (rightPiece == null || (rightPiece != null && rightPiece.white != white)) index = AppendMove(index, (int)rightPos.x, (int)rightPos.y, legalMoves);
+                    if (direction.x == 0) { left = Vector2Int.left;right = Vector2Int.right; }
+                    else { left = Vector2Int.up;right = Vector2Int.down; }
+                    Vector2Int leftPos = pos + left;
+                    Vector2Int rightPos = pos + right;
+                    Piece leftPiece = board.GetGridPiece(leftPos.x,leftPos.y,grid);
+                    Piece rightPiece = board.GetGridPiece(rightPos.x, rightPos.y, grid);
+                    if (leftPiece == null || (leftPiece != null && leftPiece.white != white)) index = AppendMove(index, leftPos.x, leftPos.y, legalMoves);
+                    if (rightPiece == null || (rightPiece != null && rightPiece.white != white)) index = AppendMove(index, rightPos.x, rightPos.y, legalMoves);
 
                 }
             }
@@ -236,7 +236,7 @@ namespace Emychess.GameRules
         /// <param name="piece"></param>
         /// <param name="board"></param>
         /// <returns></returns>
-        public Vector2[] GetAllPseudoLegalMoves(Piece piece,Board board)
+        public Vector2Int[] GetAllPseudoLegalMoves(Piece piece,Board board)
         {
             return GetAllPseudoLegalMovesGrid(piece, board.grid, board.PawnThatDidADoublePushLastRound,board);
         }
@@ -248,7 +248,7 @@ namespace Emychess.GameRules
         /// <param name="threatenedPosition"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public bool IsCaptureFeasible(Vector2 opponentPosition,Vector2 threatenedPosition,string type)
+        public bool IsCaptureFeasible(Vector2Int opponentPosition,Vector2Int threatenedPosition,string type)
         {
             switch (type)
             {
@@ -271,7 +271,7 @@ namespace Emychess.GameRules
         /// <param name="pawnThatDidADoublePush">Pawn that did a double push in the previous move, to account of en passant</param>
         /// <param name="white">The side that the king is in</param>
         /// <returns></returns>
-        public bool IsKingInCheck(Vector2 threatenedPos,Piece[] grid,Board board,Piece pawnThatDidADoublePush,bool white)
+        public bool IsKingInCheck(Vector2Int threatenedPos,Piece[] grid,Board board,Piece pawnThatDidADoublePush,bool white)
         {
             bool isKingChecked = false;
             if (grid == null) { Debug.LogWarning("Empty grid, might be first turn");return false; }
@@ -283,8 +283,8 @@ namespace Emychess.GameRules
                     {
                         if (board.GetGridPiece(opponentPiece.x, opponentPiece.y, grid) == opponentPiece) //not captured in the test move
                         {
-                            Vector2[] opponentPseudoLegalMoves = GetAllPseudoLegalMovesGrid(opponentPiece, grid, pawnThatDidADoublePush, board);
-                            foreach (Vector2 opponentPseudoLegalMove in opponentPseudoLegalMoves)
+                            Vector2Int[] opponentPseudoLegalMoves = GetAllPseudoLegalMovesGrid(opponentPiece, grid, pawnThatDidADoublePush, board);
+                            foreach (Vector2Int opponentPseudoLegalMove in opponentPseudoLegalMoves)
                             {
                                 if (opponentPseudoLegalMove == legalMovesEndMarker) break;
                                 else
@@ -312,20 +312,20 @@ namespace Emychess.GameRules
         /// <param name="movedPiece"></param>
         /// <param name="board"></param>
         /// <returns></returns>
-        public Vector2[] GetAllLegalMoves(Piece movedPiece, Board board) //TODO needs some ACTUAL testing (Perft function)
+        public Vector2Int[] GetAllLegalMoves(Piece movedPiece, Board board) //TODO needs some ACTUAL testing (Perft function)
         {
-            Vector2[] pseudoLegalMoves = GetAllPseudoLegalMoves(movedPiece, board);
-            Vector2 piecePos = movedPiece.GetVec();
+            Vector2Int[] pseudoLegalMoves = GetAllPseudoLegalMoves(movedPiece, board);
+            Vector2Int piecePos = movedPiece.GetVec();
             Piece king = movedPiece.white ? board.whiteKing : board.blackKing;
             if (king != null)
             {
-                Vector2 kingPos = king.GetVec();
+                Vector2Int kingPos = king.GetVec();
                 Piece[] currentGrid = board.grid;
                 Piece[] testGrid=new Piece[currentGrid.Length];
                 for(int i=0;i<pseudoLegalMoves.Length;i++)
                 {
                 
-                    Vector2 pseudoLegalMove = pseudoLegalMoves[i];
+                    Vector2Int pseudoLegalMove = pseudoLegalMoves[i];
                     
                     if (pseudoLegalMove == legalMovesEndMarker) break; else
                     {
@@ -334,10 +334,10 @@ namespace Emychess.GameRules
                         
                         board.MoveGridPieceVec(piecePos, pseudoLegalMove, testGrid);
                         Piece pawnThatDidADoublePush=null;
-                        if (movedPiece.type == "pawn" && Mathf.Abs(movedPiece.x - (int)pseudoLegalMove.x) > 1){
+                        if (movedPiece.type == "pawn" && Mathf.Abs(movedPiece.x - pseudoLegalMove.x) > 1){
                             pawnThatDidADoublePush = movedPiece;
                         }
-                        Vector2 threatenedPos = movedPiece.type != "king" ? kingPos : pseudoLegalMove;
+                        Vector2Int threatenedPos = movedPiece.type != "king" ? kingPos : pseudoLegalMove;
                         if (IsKingInCheck(threatenedPos, testGrid, board, pawnThatDidADoublePush, movedPiece.white)) pseudoLegalMoves[i] = legalMovesIgnoreMarker;
 
                     }
@@ -353,7 +353,7 @@ namespace Emychess.GameRules
         /// </summary>
         /// <remarks>
         /// Will recalculate legal moves, if you already have a list of legal moves 
-        /// (for example during <see cref="Piece.PieceDropped(int, int)"/>) use <see cref="MoveLegalCheck(Piece, int, int, Board, Vector2[])"/> to pass them
+        /// (for example during <see cref="Piece.PieceDropped(int, int)"/>) use <see cref="MoveLegalCheck(Piece, int, int, Board, Vector2Int[])"/> to pass them
         /// </remarks>
         /// <param name="movedPiece"></param>
         /// <param name="x"></param>
@@ -373,7 +373,7 @@ namespace Emychess.GameRules
             }
             else
             {
-                Vector2[] legalMoves = GetAllLegalMoves(movedPiece, board);
+                Vector2Int[] legalMoves = GetAllLegalMoves(movedPiece, board);
                 return MoveLegalCheck(movedPiece, x, y, board, legalMoves);
             }
             
@@ -388,13 +388,13 @@ namespace Emychess.GameRules
         /// <param name="board"></param>
         /// <param name="legalMoves"></param>
         /// <returns>0 if the move is not allowed, 1 if the move was successful, 2 if the move resulted in a capture</returns>
-        public int MoveLegalCheck(Piece movedPiece,int x,int y, Board board,Vector2[] legalMoves)
+        public int MoveLegalCheck(Piece movedPiece,int x,int y, Board board,Vector2Int[] legalMoves)
         {
             int result = 0;
             Piece targetPiece = board.GetPiece(x,y);
-            Vector2 move = new Vector2(x, y);
+            Vector2Int move = new Vector2Int(x, y);
             bool legal = false;
-            foreach(Vector2 legalMove in legalMoves) {
+            foreach(Vector2Int legalMove in legalMoves) {
                 if (legalMove != legalMovesIgnoreMarker)
                 {
                     if (legalMove == legalMovesEndMarker) break;
