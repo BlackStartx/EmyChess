@@ -56,11 +56,9 @@ namespace Emychess.GameRules
         {
             legalMovesEndMarker = Vector2Int.left - Vector2Int.up;
             legalMovesIgnoreMarker = 2 * (Vector2Int.left - Vector2Int.up);
+            rookDirections = new [] { Vector2Int.left,Vector2Int.right,Vector2Int.down,Vector2Int.up};
             slideDirections = new [] { Vector2Int.left,Vector2Int.right,Vector2Int.down,Vector2Int.up,Vector2Int.left + Vector2Int.up,Vector2Int.left - Vector2Int.up,Vector2Int.right + Vector2Int.up,Vector2Int.right - Vector2Int.up};
-            rookDirections = new Vector2Int[4];
-            for(int i = 0; i < 4; i++) rookDirections[i] = slideDirections[i];
-            bishopDirections = new Vector2Int[4];
-            for(int i = 0; i < 4; i++) bishopDirections[i] = slideDirections[7 - i];
+            bishopDirections = new [] { Vector2Int.right - Vector2Int.up,Vector2Int.right + Vector2Int.up,Vector2Int.left - Vector2Int.up,Vector2Int.left + Vector2Int.up};
         }
 
         /// <summary>
