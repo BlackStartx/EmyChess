@@ -51,11 +51,10 @@ namespace Emychess.GameRules
         /// Directions that a bishop can move in
         /// </summary>
         private Vector2Int[] bishopDirections;
-        private int[] rookColumns;
+        private int[] rookColumns = new[] { 0, 7 };
         public void Start()
         {
             legalMovesEndMarker = Vector2Int.left - Vector2Int.up;
-            rookColumns = new[] { 0, 7 };
             legalMovesIgnoreMarker = 2 * (Vector2Int.left - Vector2Int.up);
             slideDirections = new [] { Vector2Int.left,Vector2Int.right,Vector2Int.down,Vector2Int.up,Vector2Int.left + Vector2Int.up,Vector2Int.left - Vector2Int.up,Vector2Int.right + Vector2Int.up,Vector2Int.right - Vector2Int.up};
             rookDirections = new Vector2Int[4];
