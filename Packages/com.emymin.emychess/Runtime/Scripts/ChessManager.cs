@@ -98,7 +98,7 @@ namespace Emychess
 
             mainMenu.SetActive(!inProgress);
             gameModeLabel.text = anarchy ? "Anarchy" : "Standard";
-            startButton.interactable = whitePlayer != null && blackPlayer != null&&isRegistered(Networking.LocalPlayer);
+            startButton.interactable = whitePlayer != null && blackPlayer != null&&IsRegistered(Networking.LocalPlayer);
             whiteJoinLabel.text = isPlayerWhite ? "Leave White" : "Join White";
             blackJoinLabel.text = isPlayerBlack ? "Leave Black" : "Join Black";
             autoTimerCheckMark.SetActive(automatedTimer);
@@ -108,7 +108,7 @@ namespace Emychess
             currentSideLabel.text = currentSide ? "(white)" : "(black)";
             whiteScoreLabel.text = whiteScore.ToString();
             blackScoreLabel.text = blackScore.ToString();
-            endButton.interactable = isRegistered(localPlayer);
+            endButton.interactable = IsRegistered(localPlayer);
 
             anarchyControls_black.SetActive(anarchy);
             anarchyControl_white.SetActive(anarchy);
@@ -186,7 +186,7 @@ namespace Emychess
         {
             if (isBlackRegistered && GetPlayer(false) == Networking.LocalPlayer) _UnRegisterPlayer(false); else _RegisterPlayer(false);
         }
-        public bool isRegistered(VRCPlayerApi player)
+        public bool IsRegistered(VRCPlayerApi player)
         {
             return (isWhiteRegistered && GetPlayer(true) == player) || (isBlackRegistered && GetPlayer(false) == player);
         }
@@ -247,7 +247,7 @@ namespace Emychess
                 Piece currentKing = currentSide ? board.whiteKing : board.blackKing;
                 if (currentKing!=null)
                 {
-                    bool isKingInCheck = board.currentRules.isKingInCheck(currentKing.GetVec(), board.grid, board, board.PawnThatDidADoublePushLastRound, currentSide);
+                    bool isKingInCheck = board.currentRules.IsKingInCheck(currentKing.GetVec(), board.grid, board, board.PawnThatDidADoublePushLastRound, currentSide);
                     //if (isKingInCheck) { board.SetIndicator(currentKing.x, currentKing.y, 2); Debug.Log("King is in check"); } //TODO king in check should be moved to the refreshUI
                     int endState = board._CheckIfGameOver(currentSide, isKingInCheck);
                     if (endState != 0)
@@ -322,7 +322,7 @@ namespace Emychess
 
         public override void OnPlayerLeft(VRCPlayerApi player)
         {
-            if (isRegistered(player) && isRegistered(Networking.LocalPlayer))
+            if (IsRegistered(player) && IsRegistered(Networking.LocalPlayer))
             {
                 if (inProgress) _EndGame(); else
                 {

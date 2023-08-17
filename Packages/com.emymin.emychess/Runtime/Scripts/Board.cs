@@ -309,7 +309,7 @@ namespace Emychess
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public bool isValidCoordinate(int x,int y)
+        public bool IsValidCoordinate(int x,int y)
         {
             return x >= 0 && x <= 7 && y >= 0 && y <= 7;
         }
@@ -348,7 +348,7 @@ namespace Emychess
         /// <returns>A <see cref="Piece"/> if the square is not empty, <see cref="null"/> if it is</returns>
         public Piece GetGridPiece(int x,int y,Piece[] grid)
         {
-            if (!isValidCoordinate(x, y)) return null;
+            if (!IsValidCoordinate(x, y)) return null;
             return grid[GridToIndex(x, y)];
         }
 

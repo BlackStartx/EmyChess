@@ -74,18 +74,18 @@ namespace Emychess.GameRules
         /// <returns>If the append was successful, index incremented by 1</returns>
         private int AppendMove(int index, int x,int y,Vector2[] legalMoves)
         {
-            int newindex = index;
-            if (x < 0 || x > 7 || y < 0 || y > 7) return newindex;
+            int newIndex = index;
+            if (x < 0 || x > 7 || y < 0 || y > 7) return newIndex;
             if (index < legalMoves.Length)
             {     
                 legalMoves[index] = new Vector2(x, y);
                 if(index < legalMoves.Length - 1)
                 {
                     legalMoves[index + 1] = legalMovesEndMarker;//used to mark the end of the """"list""""
-                    newindex++;
+                    newIndex++;
                 }
             }
-            return newindex;
+            return newIndex;
 
         }
 
@@ -94,10 +94,10 @@ namespace Emychess.GameRules
         /// </summary>
         /// <param name="movedPiece">Piece of which to find the legal moves</param>
         /// <param name="grid">Board's state in grid form, see <see cref="Board.GetBoardGrid"/></param>
-        /// <param name="PawnThatDidADoublePushLastRound">A reference to a pawn that did a double push in the previous turn (for en passant), null if none</param>
+        /// <param name="pawnThatDidADoublePushLastRound">A reference to a pawn that did a double push in the previous turn (for en passant), null if none</param>
         /// <param name="board">A reference to the board behaviour (UdonSharp doesn't support static methods)</param>
         /// <returns>List of pseudo-legal moves</returns>
-        public Vector2[] GetAllPseudoLegalMovesGrid(Piece movedPiece,Piece[] grid,Piece PawnThatDidADoublePushLastRound,Board board)
+        public Vector2[] GetAllPseudoLegalMovesGrid(Piece movedPiece,Piece[] grid,Piece pawnThatDidADoublePushLastRound,Board board)
         {
             Vector2[] legalMoves = new Vector2[64]; // SADLY still no lists, so gotta do this the cursed way
             int index = 0;
@@ -134,14 +134,14 @@ namespace Emychess.GameRules
                 //EN PASSANT
                 Piece pieceLeft = board.GetGridPiece(x - 1, y,grid);
                 Piece pieceRight = board.GetGridPiece(x + 1, y,grid);
-                if (pieceLeft!=null && pieceLeft == PawnThatDidADoublePushLastRound && pieceLeft.white!=white)
+                if (pieceLeft!=null && pieceLeft == pawnThatDidADoublePushLastRound && pieceLeft.white!=white)
                 {
                     if (board.GetGridPiece(x - 1, y + dir,grid) == null)
                     {
                         index = AppendMove(index, x - 1, y + dir, legalMoves);
                     }
                 }
-                if (pieceRight!=null && pieceRight == PawnThatDidADoublePushLastRound && pieceRight.white!=white)
+                if (pieceRight!=null && pieceRight == pawnThatDidADoublePushLastRound && pieceRight.white!=white)
                 {
                     if (board.GetGridPiece(x + 1, y + dir,grid) == null)
                     {
@@ -157,8 +157,8 @@ namespace Emychess.GameRules
                 {
                     for(int j = -1; j < 2; j++)
                     {
-                        Piece squarepiece = board.GetGridPiece(x + i, y + j,grid);
-                        if(squarepiece==null||(squarepiece!=null && squarepiece.white != white))
+                        Piece squarePiece = board.GetGridPiece(x + i, y + j,grid);
+                        if(squarePiece==null||(squarePiece!=null && squarePiece.white != white))
                         {
                             index = AppendMove(index, x + i, y + j, legalMoves);
                         }
@@ -200,7 +200,7 @@ namespace Emychess.GameRules
                     while (true)
                     {
                         pos += direction;
-                        if (!board.isValidCoordinate((int)pos.x, (int)pos.y)) break;
+                        if (!board.IsValidCoordinate((int)pos.x, (int)pos.y)) break;
                         Piece obstaclePiece = board.GetGridPiece((int)pos.x,(int)pos.y,grid);
                         if (obstaclePiece != null && obstaclePiece.white == white) break;
                         index = AppendMove(index, (int)pos.x, (int)pos.y, legalMoves);
@@ -248,7 +248,7 @@ namespace Emychess.GameRules
         /// <param name="threatenedPosition"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public bool isCaptureFeasible(Vector2 opponentPosition,Vector2 threatenedPosition,string type)
+        public bool IsCaptureFeasible(Vector2 opponentPosition,Vector2 threatenedPosition,string type)
         {
             switch (type)
             {
@@ -268,10 +268,10 @@ namespace Emychess.GameRules
         /// <param name="threatenedPos">Position of the king</param>
         /// <param name="grid">Grid to check on (<see cref="Board.GetBoardGrid"/>)</param>
         /// <param name="board">UdonSharp doesn't support static methods, pass a reference to a board to use its methods</param>
-        /// <param name="PawnThatDidADoublePush">Pawn that did a double push in the previous move, to account of en passant</param>
+        /// <param name="pawnThatDidADoublePush">Pawn that did a double push in the previous move, to account of en passant</param>
         /// <param name="white">The side that the king is in</param>
         /// <returns></returns>
-        public bool isKingInCheck(Vector2 threatenedPos,Piece[] grid,Board board,Piece PawnThatDidADoublePush,bool white)
+        public bool IsKingInCheck(Vector2 threatenedPos,Piece[] grid,Board board,Piece pawnThatDidADoublePush,bool white)
         {
             bool isKingChecked = false;
             if (grid == null) { Debug.LogWarning("Empty grid, might be first turn");return false; }
@@ -279,11 +279,11 @@ namespace Emychess.GameRules
             {
                 if (opponentPiece.white != white)
                 {
-                    if (isCaptureFeasible(opponentPiece.GetVec(), threatenedPos, opponentPiece.type))
+                    if (IsCaptureFeasible(opponentPiece.GetVec(), threatenedPos, opponentPiece.type))
                     {
                         if (board.GetGridPiece(opponentPiece.x, opponentPiece.y, grid) == opponentPiece) //not captured in the test move
                         {
-                            Vector2[] opponentPseudoLegalMoves = GetAllPseudoLegalMovesGrid(opponentPiece, grid, PawnThatDidADoublePush, board);
+                            Vector2[] opponentPseudoLegalMoves = GetAllPseudoLegalMovesGrid(opponentPiece, grid, pawnThatDidADoublePush, board);
                             foreach (Vector2 opponentPseudoLegalMove in opponentPseudoLegalMoves)
                             {
                                 if (opponentPseudoLegalMove == legalMovesEndMarker) break;
@@ -333,12 +333,12 @@ namespace Emychess.GameRules
                         Array.Copy(currentGrid, testGrid, currentGrid.Length);
                         
                         board.MoveGridPieceVec(piecePos, pseudoLegalMove, testGrid);
-                        Piece PawnThatDidADoublePush=null;
+                        Piece pawnThatDidADoublePush=null;
                         if (movedPiece.type == "pawn" && Mathf.Abs(movedPiece.x - (int)pseudoLegalMove.x) > 1){
-                            PawnThatDidADoublePush = movedPiece;
+                            pawnThatDidADoublePush = movedPiece;
                         }
                         Vector2 threatenedPos = movedPiece.type != "king" ? kingPos : pseudoLegalMove;
-                        if (isKingInCheck(threatenedPos, testGrid, board, PawnThatDidADoublePush, movedPiece.white)) pseudoLegalMoves[i] = legalMovesIgnoreMarker;
+                        if (IsKingInCheck(threatenedPos, testGrid, board, pawnThatDidADoublePush, movedPiece.white)) pseudoLegalMoves[i] = legalMovesIgnoreMarker;
 
                     }
                 }

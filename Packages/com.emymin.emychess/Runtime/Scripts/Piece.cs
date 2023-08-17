@@ -139,19 +139,19 @@ namespace Emychess
             Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
             RequestSerialization();
         }
-        public void _SetPosition(int posx, int posy)
+        public void _SetPosition(int xPos, int yPos)
         {
             Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
-            x = (byte)Mathf.Clamp(posx, 0, 7);
-            y = (byte)Mathf.Clamp(posy, 0, 7);
+            x = (byte)Mathf.Clamp(xPos, 0, 7);
+            y = (byte)Mathf.Clamp(yPos, 0, 7);
             _UpdateState();
             RequestSerialization();
         }
-        public void _Setup(int posx, int posy, bool isWhite)
+        public void _Setup(int xPos, int yPos, bool isWhite)
         {
             Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
-            x = (byte)Mathf.Clamp(posx, 0, 7);
-            y = (byte)Mathf.Clamp(posy, 0, 7);
+            x = (byte)Mathf.Clamp(xPos, 0, 7);
+            y = (byte)Mathf.Clamp(yPos, 0, 7);
             white = isWhite;
             hasMoved = false;
             _UpdateState();
@@ -249,13 +249,13 @@ namespace Emychess
         /// <summary>
         /// Function to be called at the end of a move attempt. Will pass <see cref="legalMoves"/> to <see cref="GameRules.DefaultRules.MoveLegalCheck(Piece, int, int, Board, Vector2[])"/> to perform the move
         /// </summary>
-        /// <param name="newx"></param>
-        /// <param name="newy"></param>
-        public void PieceDropped(int newx,int newy)
+        /// <param name="xNew"></param>
+        /// <param name="yNew"></param>
+        public void PieceDropped(int xNew,int yNew)
         {
             int moveResult = 0;
-            if (board.currentRules.anarchy) moveResult = board.currentRules.Move(this, newx, newy, board);
-            else moveResult = board.currentRules.MoveLegalCheck(this, newx, newy, board, legalMoves);
+            if (board.currentRules.anarchy) moveResult = board.currentRules.Move(this, xNew, yNew, board);
+            else moveResult = board.currentRules.MoveLegalCheck(this, xNew, yNew, board, legalMoves);
 
             if (moveResult != 0)
             {
@@ -293,18 +293,18 @@ namespace Emychess
         {
             if (this.gameObject.activeSelf)
             {
-                float movex = transform.localPosition.x * -1f - .5f;
-                float movey = transform.localPosition.z * -1f - .5f;
+                float xMove = transform.localPosition.x * -1f - .5f;
+                float yMove = transform.localPosition.z * -1f - .5f;
                 if (board.currentRules.anarchy) //TODO maybe have pieces turn red when they reach deletion distance, to make it clearer
                 {
-                    if (movex<-3||movex>11||movey<-3||movey>11){
+                    if (xMove<-3||xMove>11||yMove<-3||yMove>11){
                         _Capture();
                         return;
                     }
                 }
-                int newx = Mathf.RoundToInt(Mathf.Clamp(movex, 0, 7));
-                int newy = Mathf.RoundToInt(Mathf.Clamp(movey, 0, 7));
-                PieceDropped(newx, newy);
+                int xNew = Mathf.RoundToInt(Mathf.Clamp(xMove, 0, 7));
+                int yNew = Mathf.RoundToInt(Mathf.Clamp(yMove, 0, 7));
+                PieceDropped(xNew, yNew);
                 
             }
 

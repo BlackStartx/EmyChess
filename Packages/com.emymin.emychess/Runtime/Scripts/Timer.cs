@@ -98,9 +98,9 @@ namespace Emychess
         /// <returns></returns>
         public bool _SetTimeBothSides(float time)
         {
-            bool successwhite = _SetTime(time, true);
-            bool successblack = _SetTime(time, false);
-            return successwhite && successblack;
+            bool isSuccessWhite = _SetTime(time, true);
+            bool isSuccessBlack = _SetTime(time, false);
+            return isSuccessWhite && isSuccessBlack;
         }
 
         public void _AddTime(float time)
