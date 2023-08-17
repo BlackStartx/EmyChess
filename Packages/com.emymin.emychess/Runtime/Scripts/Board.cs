@@ -83,7 +83,7 @@ namespace Emychess
         {
             VRCObjectPool pool = GetPool(type);
             int count = 0;
-            if (pool == null) { Debug.LogError("Couldn't find pool for type " + type); }
+            if (pool == null) { Debug.LogError($"Couldn't find pool for type {type}"); }
             else
             {
                 foreach(GameObject obj in pool.Pool)
@@ -474,7 +474,7 @@ namespace Emychess
                 for(int j=0;j<7; j++)
                 {
                     Piece currentSquarePiece = grid[GridToIndex(i, j)];
-                    logString += (currentSquarePiece == null ? "null" : currentSquarePiece.type)+" ";
+                    logString += $"{(currentSquarePiece == null ? "null" : currentSquarePiece.type)} ";
                 }
                 Debug.Log(logString);
             }

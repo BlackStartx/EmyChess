@@ -61,7 +61,7 @@ namespace Emychess.Interactions
             {
                 child.gameObject.SetActive(child.name == currentType);
             }
-            availableText.text = "Available " + currentType + "s";
+            availableText.text = $"Available {currentType}s";
             pieceCount.text = board.GetPiecesAvailableCount(currentType).ToString();
         }
         public override void OnDrop()

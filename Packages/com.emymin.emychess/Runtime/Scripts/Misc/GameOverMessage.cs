@@ -32,13 +32,13 @@ namespace Emychess.Misc
                 switch (gameOverState)
                 {
                     case 1: 
-                        message = "CHECKMATE! Winner: " + winningPlayerName;
+                        message = $"CHECKMATE! Winner: {winningPlayerName}";
                         break;
                     case 2: 
                         message = "STALEMATE, nobody wins";
                         break;
                     case 3:
-                        message = "TIME'S UP! Winner: " + winningPlayerName;
+                        message = $"TIME'S UP! Winner: {winningPlayerName}";
                         break;
                     default:
                         message = "ERROR, invalid game over state";
