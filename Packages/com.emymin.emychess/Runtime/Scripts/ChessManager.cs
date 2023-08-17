@@ -168,7 +168,7 @@ namespace Emychess
             Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
             PlayerHolder targetHolder = white ? whitePlayerHolder : blackPlayerHolder;
             targetHolder._SetOwner();
-            if (white) { isWhiteRegistered = true; } else { isBlackRegistered = true; }
+            if (white) isWhiteRegistered = true; else isBlackRegistered = true;
             _RefreshUI();
             RequestSerialization();
         }
@@ -177,14 +177,14 @@ namespace Emychess
         /// </summary>
         [PublicAPI] public void _RegisterWhite()
         {
-            if (isWhiteRegistered && GetPlayer(true) == Networking.LocalPlayer) { _UnRegisterPlayer(true); } else { _RegisterPlayer(true); }
+            if (isWhiteRegistered && GetPlayer(true) == Networking.LocalPlayer) _UnRegisterPlayer(true); else _RegisterPlayer(true);
         }
         /// <summary>
         /// Registers the local player as black, unregisters if they're already registered
         /// </summary>
         [PublicAPI] public void _RegisterBlack()
         {
-            if (isBlackRegistered && GetPlayer(false) == Networking.LocalPlayer) { _UnRegisterPlayer(false); } else { _RegisterPlayer(false); }
+            if (isBlackRegistered && GetPlayer(false) == Networking.LocalPlayer) _UnRegisterPlayer(false); else _RegisterPlayer(false);
         }
         public bool isRegistered(VRCPlayerApi player)
         {
@@ -218,7 +218,7 @@ namespace Emychess
         public void _UnRegisterPlayer(bool white)
         {
             Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
-            if (white) { isWhiteRegistered = false; } else { isBlackRegistered = false; }
+            if (white) isWhiteRegistered = false; else isBlackRegistered = false;
             _RefreshUI();
             RequestSerialization();
         }
@@ -269,8 +269,8 @@ namespace Emychess
         {
             
             Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
-            if (white) { whiteScore += (byte)score; }
-            else { blackScore += (byte)score; }
+            if (white) whiteScore += (byte)score;
+            else blackScore += (byte)score;
             //RequestSerialization();
         }
 
@@ -285,7 +285,7 @@ namespace Emychess
             gameOverMessage._Reset();
             if (automatedTimer)
             {
-                if (timer.isStarted) { timer._ResetTimer(0); }
+                if (timer.isStarted) timer._ResetTimer(0);
                 timer._StartCountDown(true);
             }
             _RefreshUI();
@@ -324,7 +324,7 @@ namespace Emychess
         {
             if (isRegistered(player) && isRegistered(Networking.LocalPlayer))
             {
-                if (inProgress) { _EndGame(); } else
+                if (inProgress) _EndGame(); else
                 {
 
                     bool white = GetPlayer(true) == player;

@@ -78,7 +78,7 @@ namespace Emychess.Misc
         }
         public void Start()
         {
-            if (Networking.IsMaster) { _Reset(); }
+            if (Networking.IsMaster) _Reset();
         }
     }
 

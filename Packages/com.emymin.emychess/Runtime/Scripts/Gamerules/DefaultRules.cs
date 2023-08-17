@@ -59,9 +59,9 @@ namespace Emychess.GameRules
             rookColumns = new[] { 0, 7 };
             slideDirections = new [] { new Vector2(-1,0),new Vector2(1,0),new Vector2(0,-1),new Vector2(0,1),new Vector2(-1,1),new Vector2(-1,-1),new Vector2(1,1),new Vector2(1,-1)};
             rookDirections = new Vector2[4];
-            for(int i = 0; i < 4; i++) { rookDirections[i] = slideDirections[i]; }
+            for(int i = 0; i < 4; i++) rookDirections[i] = slideDirections[i];
             bishopDirections = new Vector2[4];
-            for(int i = 0; i < 4; i++) { bishopDirections[i] = slideDirections[7 - i]; }
+            for(int i = 0; i < 4; i++) bishopDirections[i] = slideDirections[7 - i];
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Emychess.GameRules
         private int AppendMove(int index, int x,int y,Vector2[] legalMoves)
         {
             int newindex = index;
-            if (x < 0 || x > 7 || y < 0 || y > 7) { return newindex; }
+            if (x < 0 || x > 7 || y < 0 || y > 7) return newindex;
             if (index < legalMoves.Length)
             {     
                 legalMoves[index] = new Vector2(x, y);
@@ -222,8 +222,8 @@ namespace Emychess.GameRules
                     Vector2 rightPos = pos + right;
                     Piece leftPiece = board.GetGridPiece((int)leftPos.x,(int)leftPos.y,grid);
                     Piece rightPiece = board.GetGridPiece((int)rightPos.x, (int)rightPos.y, grid);
-                    if (leftPiece == null || (leftPiece != null && leftPiece.white != white)){ index = AppendMove(index, (int)leftPos.x, (int)leftPos.y, legalMoves); }
-                    if (rightPiece == null || (rightPiece != null && rightPiece.white != white)){ index = AppendMove(index, (int)rightPos.x, (int)rightPos.y, legalMoves); }
+                    if (leftPiece == null || (leftPiece != null && leftPiece.white != white)) index = AppendMove(index, (int)leftPos.x, (int)leftPos.y, legalMoves);
+                    if (rightPiece == null || (rightPiece != null && rightPiece.white != white)) index = AppendMove(index, (int)rightPos.x, (int)rightPos.y, legalMoves);
 
                 }
             }
@@ -283,7 +283,7 @@ namespace Emychess.GameRules
                             Vector2[] opponentPseudoLegalMoves = GetAllPseudoLegalMovesGrid(opponentPiece, grid, PawnThatDidADoublePush, board);
                             foreach (Vector2 opponentPseudoLegalMove in opponentPseudoLegalMoves)
                             {
-                                if (opponentPseudoLegalMove == legalMovesEndMarker) { break; }
+                                if (opponentPseudoLegalMove == legalMovesEndMarker) break;
                                 else
                                 {
                                     if (opponentPseudoLegalMove == threatenedPos)
@@ -298,7 +298,7 @@ namespace Emychess.GameRules
                         }
                     }
                 }
-                if (isKingChecked) { break; }
+                if (isKingChecked) break;
             }
             return isKingChecked;
         }
@@ -324,7 +324,7 @@ namespace Emychess.GameRules
                 
                     Vector2 pseudoLegalMove = pseudoLegalMoves[i];
                     
-                    if (pseudoLegalMove == legalMovesEndMarker) { break; } else
+                    if (pseudoLegalMove == legalMovesEndMarker) break; else
                     {
                         
                         Array.Copy(currentGrid, testGrid, currentGrid.Length);
@@ -335,8 +335,8 @@ namespace Emychess.GameRules
                             PawnThatDidADoublePush = movedPiece;
                         }
                         Vector2 threatenedPos = movedPiece.type != "king" ? kingPos : pseudoLegalMove;
-                        if (isKingInCheck(threatenedPos, testGrid, board, PawnThatDidADoublePush, movedPiece.white)) { pseudoLegalMoves[i] = legalMovesIgnoreMarker; }
-                    
+                        if (isKingInCheck(threatenedPos, testGrid, board, PawnThatDidADoublePush, movedPiece.white)) pseudoLegalMoves[i] = legalMovesIgnoreMarker;
+
                     }
                 }
 
@@ -400,7 +400,7 @@ namespace Emychess.GameRules
             }
             if (legal)
             {
-                if (targetPiece != null) { targetPiece._Capture(); result = 2; } else { result = 1; }
+                if (targetPiece != null) { targetPiece._Capture(); result = 2; } else result = 1;
 
                 if (movedPiece.type == "pawn" && movedPiece.x != x && board.GetPiece(x, y) == null)//EN PASSANT
                 {

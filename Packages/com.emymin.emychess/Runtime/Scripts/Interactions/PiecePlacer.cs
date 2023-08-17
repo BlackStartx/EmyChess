@@ -39,7 +39,7 @@ namespace Emychess.Interactions
 
         public void SetEnabled(bool enabled)
         {
-            if (pickup == null) { pickup = (VRC_Pickup)GetComponent(typeof(VRC_Pickup)); }
+            if (pickup == null) pickup = (VRC_Pickup)GetComponent(typeof(VRC_Pickup));
             pickup.pickupable = enabled;
         }
         [PublicAPI] public void _NextType()

@@ -85,11 +85,11 @@ namespace Emychess
                     Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
                 }
 
-                if (white) { timeWhite = time; } else { timeBlack = time; }
+                if (white) timeWhite = time; else timeBlack = time;
                 _RefreshDisplay();
                 return true;
             }
-            else { return false; }
+            else return false;
         }
         /// <summary>
         /// Sets the time for both sides, see <see cref="_SetTime(float, bool)"/>
@@ -135,7 +135,7 @@ namespace Emychess
                 isCurrentSideWhite = white;
                 startedCountingDownTime = Time.time;
                 startingTime = white ? timeWhite : timeBlack;
-                if (moves < 255) { moves++; }
+                if (moves < 255) moves++;
                 isStarted = true;
             }
             _RefreshDisplay();
@@ -172,7 +172,7 @@ namespace Emychess
                     bool success = _SetTime(newTime, isCurrentSideWhite);
                     if (!success)
                     {
-                        if (newTime <= 0 && chessManager.automatedTimer && chessManager.inProgress) { chessManager.gameOverMessage._SetGameOverMessage(3, !isCurrentSideWhite); }
+                        if (newTime <= 0 && chessManager.automatedTimer && chessManager.inProgress) chessManager.gameOverMessage._SetGameOverMessage(3, !isCurrentSideWhite);
                         //_ResetTimer(0); 
                     }
                 }
@@ -181,7 +181,7 @@ namespace Emychess
         }
         public void Start()
         {
-            if (Networking.IsMaster) { _ResetTimer(0); }
+            if (Networking.IsMaster) _ResetTimer(0);
         }
 
     }

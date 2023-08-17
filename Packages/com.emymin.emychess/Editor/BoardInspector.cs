@@ -59,8 +59,8 @@ namespace Emychess{
             pieceAmounts = serializedObject.FindProperty(nameof(Board.pieceAmounts));
 
             Board board = (Board)target;
-            if (board.pieceAmounts == null || board.pieceAmounts.Length < 6) { board.pieceAmounts = new[] { 16, 8, 2, 8, 16, 8 }; }
-            if (board.piecePrefabs == null || board.piecePrefabs.Length < 6) { board.piecePrefabs = new GameObject[6]; }
+            if (board.pieceAmounts == null || board.pieceAmounts.Length < 6) board.pieceAmounts = new[] { 16, 8, 2, 8, 16, 8 };
+            if (board.piecePrefabs == null || board.piecePrefabs.Length < 6) board.piecePrefabs = new GameObject[6];
         }
 
         public Dictionary<string,piecePrefabAmount> GetPieceDictionary(Board board)

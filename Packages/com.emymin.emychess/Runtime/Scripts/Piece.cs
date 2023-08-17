@@ -87,8 +87,8 @@ namespace Emychess
 
         public void _UpdateState()
         {
-            if (transform.parent != board.pieces_parent) { transform.SetParent(board.pieces_parent); }
-            if (pickup == null) { pickup = (VRC_Pickup)GetComponent(typeof(VRC_Pickup)); }
+            if (transform.parent != board.pieces_parent) transform.SetParent(board.pieces_parent);
+            if (pickup == null) pickup = (VRC_Pickup)GetComponent(typeof(VRC_Pickup));
             if (board.chessManager.inProgress)
             {
                 if(Networking.LocalPlayer==board.chessManager.GetPlayer(board.chessManager.currentSide) && board.chessManager.currentSide==white)
@@ -120,14 +120,14 @@ namespace Emychess
             previousX = x;
             previousY = y;
 
-            if (pieceRenderer == null) { pieceRenderer = GetComponent<Renderer>(); }
+            if (pieceRenderer == null) pieceRenderer = GetComponent<Renderer>();
             pieceRenderer.material = white ? board.whitePieceMaterial : board.blackPieceMaterial;
 
             board._RegenerateGrid();
             board.chessManager.RefreshPiecePlacerPieceCount();
 
-            if ((board.whiteKing == null || !board.whiteKing.gameObject.activeInHierarchy) && type == "king" && white) { board.whiteKing = this; }
-            if ((board.blackKing == null || !board.blackKing.gameObject.activeInHierarchy) && type == "king" && !white) { board.blackKing = this; }
+            if ((board.whiteKing == null || !board.whiteKing.gameObject.activeInHierarchy) && type == "king" && white) board.whiteKing = this;
+            if ((board.blackKing == null || !board.blackKing.gameObject.activeInHierarchy) && type == "king" && !white) board.blackKing = this;
 
         }
         public override void OnDeserialization() //TODO late joiners sometimes can't see all pieces, some limit on manual syncing?
@@ -174,7 +174,7 @@ namespace Emychess
 
         public void _Capture()
         {
-            if (pickup.IsHeld) { pickup.Drop(); }
+            if (pickup.IsHeld) pickup.Drop();
             _ReturnToPool();
             board.chessManager.AddScore(GetValue(), !white);
         }
@@ -228,7 +228,7 @@ namespace Emychess
                 {
                     if (legalMove != board.currentRules.legalMovesIgnoreMarker)
                     {
-                        if (legalMove == board.currentRules.legalMovesEndMarker) { break; }
+                        if (legalMove == board.currentRules.legalMovesEndMarker) break;
                         board.SetIndicator((int)legalMove.x, (int)legalMove.y, 1);
                     }
                 }
@@ -250,8 +250,8 @@ namespace Emychess
         public void PieceDropped(int newx,int newy)
         {
             int moveResult = 0;
-            if (board.currentRules.anarchy) { moveResult = board.currentRules.Move(this, newx, newy, board); }
-            else { moveResult = board.currentRules.MoveLegalCheck(this, newx, newy, board, legalMoves); }
+            if (board.currentRules.anarchy) moveResult = board.currentRules.Move(this, newx, newy, board);
+            else moveResult = board.currentRules.MoveLegalCheck(this, newx, newy, board, legalMoves);
 
             if (moveResult != 0)
             {

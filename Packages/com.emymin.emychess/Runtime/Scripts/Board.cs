@@ -83,7 +83,7 @@ namespace Emychess
         {
             VRCObjectPool pool = GetPool(type);
             int count = 0;
-            if (pool == null) { Debug.LogError($"Couldn't find pool for type {type}"); }
+            if (pool == null) Debug.LogError($"Couldn't find pool for type {type}");
             else
             {
                 foreach(GameObject obj in pool.Pool)
@@ -259,7 +259,7 @@ namespace Emychess
             int count = 0;
             foreach(Transform child in pieces_parent)
             {
-                if (child.gameObject.activeSelf) { count++; }
+                if (child.gameObject.activeSelf) count++;
             }
             return count;
         }
@@ -457,8 +457,8 @@ namespace Emychess
             _ClearIndicators();
             for(int i = 0; i < 64; i++)
             {
-                if (grid[i] == null) { IndicatorArray[i] = 0; }
-                else { IndicatorArray[i] = 3; }
+                if (grid[i] == null) IndicatorArray[i] = 0;
+                else IndicatorArray[i] = 3;
             }
             _RefreshIndicators();
         }
