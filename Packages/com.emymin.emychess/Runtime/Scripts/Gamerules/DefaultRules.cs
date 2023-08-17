@@ -250,13 +250,16 @@ namespace Emychess.GameRules
         /// <returns></returns>
         public bool isCaptureFeasible(Vector2 opponentPosition,Vector2 threatenedPosition,string type)
         {
-            if (type == "rook") return (opponentPosition.x == threatenedPosition.x | opponentPosition.y == threatenedPosition.y);
-            else if (type == "pawn") return (Mathf.Abs(opponentPosition.x - threatenedPosition.x) == 1 && Mathf.Abs(opponentPosition.y - threatenedPosition.y) == 1);
-            else if (type == "knight") return (Mathf.Abs(opponentPosition.x - threatenedPosition.x) < 3 && Mathf.Abs(opponentPosition.y - threatenedPosition.y) < 3);
-            else if (type == "bishop") return (Mathf.Abs(opponentPosition.x - threatenedPosition.x) == Mathf.Abs(opponentPosition.y - threatenedPosition.y));
-            else if (type == "queen") return (opponentPosition.x == threatenedPosition.x | opponentPosition.y == threatenedPosition.y) | (Mathf.Abs(opponentPosition.x - threatenedPosition.x) == Mathf.Abs(opponentPosition.y - threatenedPosition.y));
-            else if (type == "king") return (Mathf.Abs((opponentPosition-threatenedPosition).magnitude)<3);
-            else return true;
+            switch (type)
+            {
+                case "rook": return (opponentPosition.x == threatenedPosition.x | opponentPosition.y == threatenedPosition.y);
+                case "pawn": return (Mathf.Abs(opponentPosition.x - threatenedPosition.x) == 1 && Mathf.Abs(opponentPosition.y - threatenedPosition.y) == 1);
+                case "knight": return (Mathf.Abs(opponentPosition.x - threatenedPosition.x) < 3 && Mathf.Abs(opponentPosition.y - threatenedPosition.y) < 3);
+                case "bishop": return (Mathf.Abs(opponentPosition.x - threatenedPosition.x) == Mathf.Abs(opponentPosition.y - threatenedPosition.y));
+                case "queen": return (opponentPosition.x == threatenedPosition.x | opponentPosition.y == threatenedPosition.y) | (Mathf.Abs(opponentPosition.x - threatenedPosition.x) == Mathf.Abs(opponentPosition.y - threatenedPosition.y));
+                case "king": return (Mathf.Abs((opponentPosition-threatenedPosition).magnitude)<3);
+                default: return true;
+            }
         }
 
         /// <summary>

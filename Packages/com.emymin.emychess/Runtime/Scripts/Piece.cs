@@ -165,11 +165,15 @@ namespace Emychess
         /// <returns></returns>
         public int GetValue()
         {
-            if (type == "pawn") return 1;
-            if (type == "bishop" || type == "knight") return 3;
-            if (type == "rook") return 5;
-            if (type == "queen") return 9;
-            return 0;
+            switch (type)
+            {
+                case "pawn": return 1;
+                case "bishop": return 3;
+                case "knight": return 3;
+                case "rook": return 5;
+                case "queen": return 9;
+                default: return 0;
+            }
         }
 
         public void _Capture()
