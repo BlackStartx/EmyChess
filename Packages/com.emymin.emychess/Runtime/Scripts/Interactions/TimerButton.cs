@@ -26,7 +26,7 @@ namespace Emychess.Interactions
             isRaised = raised;
             Quaternion currentRot = transform.localRotation;
             transform.localEulerAngles = new Vector3(raised ? raiseAngle : 0, currentRot.eulerAngles.y, currentRot.eulerAngles.z);
-            DisableInteractive = !(isRaised&&(!timer.chessManager.automatedTimer)); //TODO should it only be clicked by players? or is it better to have everyone be able to click it?
+            DisableInteractive = !(isRaised&&!timer.chessManager.automatedTimer); //TODO should it only be clicked by players? or is it better to have everyone be able to click it?
         }
         
         public override void Interact()

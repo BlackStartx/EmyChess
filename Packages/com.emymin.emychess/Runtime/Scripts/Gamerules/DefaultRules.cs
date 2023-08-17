@@ -252,12 +252,12 @@ namespace Emychess.GameRules
         {
             switch (type)
             {
-                case "rook": return (opponentPosition.x == threatenedPosition.x | opponentPosition.y == threatenedPosition.y);
-                case "pawn": return (Mathf.Abs(opponentPosition.x - threatenedPosition.x) == 1 && Mathf.Abs(opponentPosition.y - threatenedPosition.y) == 1);
-                case "knight": return (Mathf.Abs(opponentPosition.x - threatenedPosition.x) < 3 && Mathf.Abs(opponentPosition.y - threatenedPosition.y) < 3);
-                case "bishop": return (Mathf.Abs(opponentPosition.x - threatenedPosition.x) == Mathf.Abs(opponentPosition.y - threatenedPosition.y));
-                case "queen": return (opponentPosition.x == threatenedPosition.x | opponentPosition.y == threatenedPosition.y) | (Mathf.Abs(opponentPosition.x - threatenedPosition.x) == Mathf.Abs(opponentPosition.y - threatenedPosition.y));
-                case "king": return (Mathf.Abs((opponentPosition-threatenedPosition).magnitude)<3);
+                case "rook": return opponentPosition.x == threatenedPosition.x | opponentPosition.y == threatenedPosition.y;
+                case "pawn": return Mathf.Abs(opponentPosition.x - threatenedPosition.x) == 1 && Mathf.Abs(opponentPosition.y - threatenedPosition.y) == 1;
+                case "knight": return Mathf.Abs(opponentPosition.x - threatenedPosition.x) < 3 && Mathf.Abs(opponentPosition.y - threatenedPosition.y) < 3;
+                case "bishop": return Mathf.Abs(opponentPosition.x - threatenedPosition.x) == Mathf.Abs(opponentPosition.y - threatenedPosition.y);
+                case "queen": return opponentPosition.x == threatenedPosition.x | opponentPosition.y == threatenedPosition.y | (Mathf.Abs(opponentPosition.x - threatenedPosition.x) == Mathf.Abs(opponentPosition.y - threatenedPosition.y));
+                case "king": return Mathf.Abs((opponentPosition-threatenedPosition).magnitude)<3;
                 default: return true;
             }
         }
@@ -334,7 +334,7 @@ namespace Emychess.GameRules
                         
                         board.MoveGridPieceVec(piecePos, pseudoLegalMove, testGrid);
                         Piece PawnThatDidADoublePush=null;
-                        if (movedPiece.type == "pawn" && (Mathf.Abs(movedPiece.x - (int)pseudoLegalMove.x) > 1)){
+                        if (movedPiece.type == "pawn" && Mathf.Abs(movedPiece.x - (int)pseudoLegalMove.x) > 1){
                             PawnThatDidADoublePush = movedPiece;
                         }
                         Vector2 threatenedPos = movedPiece.type != "king" ? kingPos : pseudoLegalMove;
@@ -415,7 +415,7 @@ namespace Emychess.GameRules
                 {
                     int dir = Mathf.Min(x, movedPiece.x) == x ? -1 : 1;
                     Piece rookCastle = dir == 1 ? board.GetPiece(7, y) : board.GetPiece(0, y);
-                    rookCastle._SetPosition(x + (dir * -1), y);
+                    rookCastle._SetPosition(x + dir * -1, y);
 
                 }
                 if (movedPiece.type == "pawn" && Mathf.Abs(y - movedPiece.y) == 2)

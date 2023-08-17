@@ -172,7 +172,7 @@ namespace Emychess
             {
                 foreach(Piece piece in GetAllPieces())
                 {
-                    bool isGrabbable = (white == piece.white) && chessManager.inProgress;
+                    bool isGrabbable = white == piece.white && chessManager.inProgress;
                     piece.SetGrabbable(isGrabbable);
                 }
             }
@@ -219,19 +219,19 @@ namespace Emychess
             {
                 switch (character)
                 {
-                    case ('p'): { _SpawnPiece(x, y, false, "pawn"); x++; break; }
-                    case ('P'): { _SpawnPiece(x, y, true, "pawn"); x++; break; }
-                    case ('n'): { _SpawnPiece(x, y, false, "knight"); x++; break; }
-                    case ('N'): { _SpawnPiece(x, y, true, "knight"); x++; break; }
-                    case ('b'): { _SpawnPiece(x, y, false, "bishop"); x++; break; }
-                    case ('B'): { _SpawnPiece(x, y, true, "bishop"); x++; break; }
-                    case ('r'): { _SpawnPiece(x, y, false, "rook"); x++; break; }
-                    case ('R'): { _SpawnPiece(x, y, true, "rook"); x++; break; }
-                    case ('q'): { _SpawnPiece(x, y, false, "queen"); x++; break; }
-                    case ('Q'): { _SpawnPiece(x, y, true, "queen"); x++; break; }
-                    case ('k'): { _SpawnPiece(x, y, false, "king"); x++; break; }
-                    case ('K'): { _SpawnPiece(x, y, true, "king"); x++; break; }
-                    case ('/'): { x = 0; y--; break; }
+                    case 'p': { _SpawnPiece(x, y, false, "pawn"); x++; break; }
+                    case 'P': { _SpawnPiece(x, y, true, "pawn"); x++; break; }
+                    case 'n': { _SpawnPiece(x, y, false, "knight"); x++; break; }
+                    case 'N': { _SpawnPiece(x, y, true, "knight"); x++; break; }
+                    case 'b': { _SpawnPiece(x, y, false, "bishop"); x++; break; }
+                    case 'B': { _SpawnPiece(x, y, true, "bishop"); x++; break; }
+                    case 'r': { _SpawnPiece(x, y, false, "rook"); x++; break; }
+                    case 'R': { _SpawnPiece(x, y, true, "rook"); x++; break; }
+                    case 'q': { _SpawnPiece(x, y, false, "queen"); x++; break; }
+                    case 'Q': { _SpawnPiece(x, y, true, "queen"); x++; break; }
+                    case 'k': { _SpawnPiece(x, y, false, "king"); x++; break; }
+                    case 'K': { _SpawnPiece(x, y, true, "king"); x++; break; }
+                    case '/': { x = 0; y--; break; }
                     default:
                         {
                             if (Char.IsDigit(character))
@@ -301,7 +301,7 @@ namespace Emychess
         /// <returns></returns>
         public int VecToIndex(Vector2 vec)
         {
-            return (GridToIndex((int)vec.x, (int)vec.y));
+            return GridToIndex((int)vec.x, (int)vec.y);
         }
         /// <summary>
         /// Check if a coordinate is within the bounds of the board
@@ -311,7 +311,7 @@ namespace Emychess
         /// <returns></returns>
         public bool isValidCoordinate(int x,int y)
         {
-            return (x >= 0 && x <= 7 && y >= 0 && y <= 7);
+            return x >= 0 && x <= 7 && y >= 0 && y <= 7;
         }
         /// <summary>
         /// Set a piece to a certain position in a grid
@@ -383,7 +383,7 @@ namespace Emychess
                 int dir = Mathf.Min(tx, ox) == tx ? -1 : 1;
                 int rox = dir == 1 ? 7 : 0;
                 int roy = oy;
-                int rtx = tx + (dir * -1);
+                int rtx = tx + dir * -1;
                 int rty = ty;
                 MoveGridPiece(rox, roy, rtx, rty, grid);
             }

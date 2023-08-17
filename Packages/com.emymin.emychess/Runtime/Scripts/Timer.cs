@@ -165,7 +165,7 @@ namespace Emychess
             
             if (Networking.GetOwner(this.gameObject)==Networking.LocalPlayer)
             {
-                if (isStarted && (!chessManager.automatedTimer || (chessManager.gameOverMessage.gameOverState==0) ))
+                if (isStarted && (!chessManager.automatedTimer || chessManager.gameOverMessage.gameOverState==0 ))
                 {
                     
                     float newTime = startingTime - (Time.time - startedCountingDownTime);

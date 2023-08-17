@@ -44,7 +44,7 @@ namespace Emychess
         /// </summary>
         public bool white
         {
-            get { return ((_state & 0b00000010) >> 1) == 1; }
+            get { return (_state & 0b00000010) >> 1 == 1; }
             set { _state &= 0b11111101; _state |= (byte)((value ? 1 : 0) << 1); }
         }
         /// <summary>

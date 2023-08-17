@@ -50,7 +50,7 @@ namespace Emychess.Interactions
         }
         [PublicAPI] public void _PreviousType()
         {
-            index = (byte)(((index - 1) + types.Length) % types.Length);
+            index = (byte)((index - 1 + types.Length) % types.Length);
             currentType = types[index];
             _Refresh();
         }
@@ -69,7 +69,7 @@ namespace Emychess.Interactions
             Vector3 pos = board.pieces_parent.InverseTransformPoint(transform.position); //TODO board should have methods to get coordinates from position and vice versa, also for Piece placement
             int x = (int)pos.x*-1-1;
             int y = (int)pos.z*-1-1;
-            if (board.currentRules.anarchy && (board.GetPiecesAvailableCount(currentType)>0) )
+            if (board.currentRules.anarchy && board.GetPiecesAvailableCount(currentType)>0 )
             {
                 Piece captured = board.GetPiece(x, y);
                 if (captured != null) captured._Capture();

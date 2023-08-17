@@ -89,18 +89,18 @@ namespace Emychess
             VRCPlayerApi blackPlayer = GetPlayer(false);
             VRCPlayerApi currentPlayer = GetPlayer(currentSide);
             Piece currentKing = currentSide ? board.whiteKing : board.blackKing;
-            bool isPlayerWhite = (localPlayer == whitePlayer);
-            bool isPlayerBlack = (localPlayer == blackPlayer);
-            bool isPlayerTurn = (localPlayer == currentPlayer);
+            bool isPlayerWhite = localPlayer == whitePlayer;
+            bool isPlayerBlack = localPlayer == blackPlayer;
+            bool isPlayerTurn = localPlayer == currentPlayer;
 
             whitePlayerLabel.text = whitePlayer == null ? "-" : whitePlayer.displayName;
             blackPlayerLabel.text = blackPlayer == null ? "-" : blackPlayer.displayName;
 
             mainMenu.SetActive(!inProgress);
             gameModeLabel.text = anarchy ? "Anarchy" : "Standard";
-            startButton.interactable = (whitePlayer != null && blackPlayer != null)&&isRegistered(Networking.LocalPlayer);
-            whiteJoinLabel.text = (isPlayerWhite) ? "Leave White" : "Join White";
-            blackJoinLabel.text = (isPlayerBlack) ? "Leave Black" : "Join Black";
+            startButton.interactable = whitePlayer != null && blackPlayer != null&&isRegistered(Networking.LocalPlayer);
+            whiteJoinLabel.text = isPlayerWhite ? "Leave White" : "Join White";
+            blackJoinLabel.text = isPlayerBlack ? "Leave Black" : "Join Black";
             autoTimerCheckMark.SetActive(automatedTimer);
 
             gameMenu.SetActive(inProgress);
@@ -112,9 +112,9 @@ namespace Emychess
 
             anarchyControls_black.SetActive(anarchy);
             anarchyControl_white.SetActive(anarchy);
-            endTurnButton_black.DisableInteractive = !(isPlayerBlack&&(!currentSide)&&inProgress);
+            endTurnButton_black.DisableInteractive = !(isPlayerBlack&&!currentSide&&inProgress);
             endTurnButton_white.DisableInteractive = !(isPlayerWhite&&currentSide&&inProgress);
-            blackPiecePlacer.SetEnabled(isPlayerBlack&&(!currentSide)&&inProgress);
+            blackPiecePlacer.SetEnabled(isPlayerBlack&&!currentSide&&inProgress);
             blackPiecePlacer._Refresh();
             whitePiecePlacer.SetEnabled(isPlayerWhite&&currentSide&&inProgress);
             whitePiecePlacer._Refresh();
@@ -188,7 +188,7 @@ namespace Emychess
         }
         public bool isRegistered(VRCPlayerApi player)
         {
-            return (isWhiteRegistered && (GetPlayer(true) == player)) || (isBlackRegistered && (GetPlayer(false) == player));
+            return (isWhiteRegistered && GetPlayer(true) == player) || (isBlackRegistered && GetPlayer(false) == player);
         }
         /// <summary>
         /// Only Standard and Anarchy are available game modes currently
