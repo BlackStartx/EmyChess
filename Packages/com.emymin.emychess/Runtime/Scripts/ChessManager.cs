@@ -33,6 +33,8 @@ namespace Emychess
         [UdonSynced][HideInInspector]
         public bool isBlackRegistered;
         [UdonSynced][HideInInspector]
+        public bool isKingInCheck;
+        [UdonSynced][HideInInspector]
         public bool inProgress;
         [UdonSynced][HideInInspector]
         public bool currentSide;
@@ -123,6 +125,15 @@ namespace Emychess
 
             board._SetPiecesGrabbable(currentPlayer, currentSide);
 
+            if (isKingInCheck) MarkCheck();
+        }
+
+        private void MarkCheck()
+        {
+            Piece currentKingPiece = currentSide ? board.whiteKing : board.blackKing;
+            if (!currentKingPiece) return;
+            Vector2 kingVector = currentKingPiece.GetVec();
+            board.SetIndicator((int)kingVector.x, (int)kingVector.y, 2);
         }
 
         public void RefreshPiecePlacerPieceCount()
@@ -247,8 +258,7 @@ namespace Emychess
                 Piece currentKing = currentSide ? board.whiteKing : board.blackKing;
                 if (currentKing!=null)
                 {
-                    bool isKingInCheck = board.currentRules.IsKingInCheck(currentKing.GetVec(), board.grid, board, board.PawnThatDidADoublePushLastRound, currentSide);
-                    //if (isKingInCheck) { board.SetIndicator(currentKing.x, currentKing.y, 2); Debug.Log("King is in check"); } //TODO king in check should be moved to the refreshUI
+                    isKingInCheck = board.currentRules.IsKingInCheck(currentKing.GetVec(), board.grid, board, board.PawnThatDidADoublePushLastRound, currentSide);
                     int endState = board._CheckIfGameOver(currentSide, isKingInCheck);
                     if (endState != 0)
                     {
@@ -278,6 +288,7 @@ namespace Emychess
         {
 
             Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
+            isKingInCheck = false;
             inProgress = true;
             whiteScore = blackScore = 0;
             currentSide=true;
@@ -296,6 +307,7 @@ namespace Emychess
         {
 
             Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
+            isKingInCheck = false;
             inProgress = false;
             board._ClearBoard();
             if (automatedTimer)

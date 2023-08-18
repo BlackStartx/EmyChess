@@ -286,7 +286,7 @@ namespace Emychess
                 board._SetPiecesGrabbable(Networking.LocalPlayer, white);
             }
 
-            board._ClearIndicators();
+            board._ClearIndicators(1);
         }
 
         public override void OnDrop() //TODO when dropping piece it could animate into place

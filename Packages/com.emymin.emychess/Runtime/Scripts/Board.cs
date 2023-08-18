@@ -448,6 +448,14 @@ namespace Emychess
             _RefreshIndicators();
         }
 
+        public void _ClearIndicators(int index)
+        {
+            for (int i = 0; i < IndicatorArray.Length; i++)
+                if ((int)IndicatorArray[i] == index)
+                    IndicatorArray[i] = 0;
+            _RefreshIndicators();
+        }
+
         /// <summary>
         /// Display debug indicators on the board for every spot on the <see cref="grid"/> that contains a piece
         /// </summary>
