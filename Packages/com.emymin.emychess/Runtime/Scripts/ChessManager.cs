@@ -334,14 +334,13 @@ namespace Emychess
 
         public override void OnPlayerLeft(VRCPlayerApi player)
         {
-            if (IsRegistered(player) && IsRegistered(Networking.LocalPlayer))
+            if (IsRegistered(player) && Networking.IsOwner(gameObject))
             {
                 if (inProgress) _EndGame(); else
                 {
-
-                    bool white = GetPlayer(true) == player;
-                    _UnRegisterPlayer(white);
-
+                    // The player may be registered as black & white simultaneously!
+                    if(GetPlayer(true) == player) _UnRegisterPlayer(true);
+                    if(GetPlayer(false) == player) _UnRegisterPlayer(false);
                 }
             }
         }
