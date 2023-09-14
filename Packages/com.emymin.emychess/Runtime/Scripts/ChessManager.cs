@@ -339,8 +339,10 @@ namespace Emychess
                 if (inProgress) _EndGame(); else
                 {
                     // The player may be registered as black & white simultaneously!
-                    if(GetPlayer(true) == player) _UnRegisterPlayer(true);
-                    if(GetPlayer(false) == player) _UnRegisterPlayer(false);
+                    if(GetPlayer(true) == player) isWhiteRegistered = false;
+                    if(GetPlayer(false) == player) isBlackRegistered = false;
+                    _RefreshUI();
+                    RequestSerialization();
                 }
             }
         }
